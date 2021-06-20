@@ -94,6 +94,87 @@ function A9(fun, a, b, c, d, e, f, g, h, i) {
 console.warn('Compiled in DEV mode. Follow the advice at https://elm-lang.org/0.19.1/optimize for better performance and smaller assets.');
 
 
+var _List_Nil_UNUSED = { $: 0 };
+var _List_Nil = { $: '[]' };
+
+function _List_Cons_UNUSED(hd, tl) { return { $: 1, a: hd, b: tl }; }
+function _List_Cons(hd, tl) { return { $: '::', a: hd, b: tl }; }
+
+
+var _List_cons = F2(_List_Cons);
+
+function _List_fromArray(arr)
+{
+	var out = _List_Nil;
+	for (var i = arr.length; i--; )
+	{
+		out = _List_Cons(arr[i], out);
+	}
+	return out;
+}
+
+function _List_toArray(xs)
+{
+	for (var out = []; xs.b; xs = xs.b) // WHILE_CONS
+	{
+		out.push(xs.a);
+	}
+	return out;
+}
+
+var _List_map2 = F3(function(f, xs, ys)
+{
+	for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
+	{
+		arr.push(A2(f, xs.a, ys.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map3 = F4(function(f, xs, ys, zs)
+{
+	for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A3(f, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map4 = F5(function(f, ws, xs, ys, zs)
+{
+	for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map5 = F6(function(f, vs, ws, xs, ys, zs)
+{
+	for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_sortBy = F2(function(f, xs)
+{
+	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
+		return _Utils_cmp(f(a), f(b));
+	}));
+});
+
+var _List_sortWith = F2(function(f, xs)
+{
+	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
+		var ord = A2(f, a, b);
+		return ord === $elm$core$Basics$EQ ? 0 : ord === $elm$core$Basics$LT ? -1 : 1;
+	}));
+});
+
+
+
 var _JsArray_empty = [];
 
 function _JsArray_singleton(value)
@@ -723,87 +804,6 @@ function _Utils_ap(xs, ys)
 	}
 	return root;
 }
-
-
-
-var _List_Nil_UNUSED = { $: 0 };
-var _List_Nil = { $: '[]' };
-
-function _List_Cons_UNUSED(hd, tl) { return { $: 1, a: hd, b: tl }; }
-function _List_Cons(hd, tl) { return { $: '::', a: hd, b: tl }; }
-
-
-var _List_cons = F2(_List_Cons);
-
-function _List_fromArray(arr)
-{
-	var out = _List_Nil;
-	for (var i = arr.length; i--; )
-	{
-		out = _List_Cons(arr[i], out);
-	}
-	return out;
-}
-
-function _List_toArray(xs)
-{
-	for (var out = []; xs.b; xs = xs.b) // WHILE_CONS
-	{
-		out.push(xs.a);
-	}
-	return out;
-}
-
-var _List_map2 = F3(function(f, xs, ys)
-{
-	for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
-	{
-		arr.push(A2(f, xs.a, ys.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map3 = F4(function(f, xs, ys, zs)
-{
-	for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A3(f, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map4 = F5(function(f, ws, xs, ys, zs)
-{
-	for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map5 = F6(function(f, vs, ws, xs, ys, zs)
-{
-	for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_sortBy = F2(function(f, xs)
-{
-	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
-		return _Utils_cmp(f(a), f(b));
-	}));
-});
-
-var _List_sortWith = F2(function(f, xs)
-{
-	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
-		var ord = A2(f, a, b);
-		return ord === $elm$core$Basics$EQ ? 0 : ord === $elm$core$Basics$LT ? -1 : 1;
-	}));
-});
 
 
 
@@ -4369,6 +4369,8 @@ function _Browser_load(url)
 		}
 	}));
 }
+var $elm$core$Basics$EQ = {$: 'EQ'};
+var $elm$core$Basics$LT = {$: 'LT'};
 var $elm$core$List$cons = _List_cons;
 var $elm$core$Elm$JsArray$foldr = _JsArray_foldr;
 var $elm$core$Array$foldr = F3(
@@ -4446,9 +4448,21 @@ var $elm$core$Set$toList = function (_v0) {
 	var dict = _v0.a;
 	return $elm$core$Dict$keys(dict);
 };
-var $elm$core$Basics$EQ = {$: 'EQ'};
 var $elm$core$Basics$GT = {$: 'GT'};
-var $elm$core$Basics$LT = {$: 'LT'};
+var $author$project$Main$Noth = {$: 'Noth'};
+var $author$project$Main$T = {$: 'T'};
+var $author$project$Main$initMino = {
+	minoD: $author$project$Main$Noth,
+	minoK: $author$project$Main$T,
+	point: _Utils_Tuple2(2, 2)
+};
+var $elm$core$Basics$apR = F2(
+	function (x, f) {
+		return f(x);
+	});
+var $elm$core$Basics$add = _Basics_add;
+var $author$project$Main$boardSizeX = 10;
+var $author$project$Main$boardSizeY = 20;
 var $elm$core$Basics$identity = function (x) {
 	return x;
 };
@@ -4595,21 +4609,6 @@ var $elm$core$Set$insert = F2(
 var $elm$core$Set$fromList = function (list) {
 	return A3($elm$core$List$foldl, $elm$core$Set$insert, $elm$core$Set$empty, list);
 };
-var $author$project$Main$minoT = $elm$core$Set$fromList(
-	_List_fromArray(
-		[
-			_Utils_Tuple2(1, 1),
-			_Utils_Tuple2(2, 1),
-			_Utils_Tuple2(3, 1),
-			_Utils_Tuple2(2, 2)
-		]));
-var $elm$core$Basics$apR = F2(
-	function (x, f) {
-		return f(x);
-	});
-var $elm$core$Basics$add = _Basics_add;
-var $author$project$Main$boardSizeX = 10;
-var $author$project$Main$boardSizeY = 20;
 var $elm$core$Basics$gt = _Utils_gt;
 var $elm$core$List$reverse = function (list) {
 	return A3($elm$core$List$foldl, $elm$core$List$cons, _List_Nil, list);
@@ -4767,7 +4766,7 @@ var $author$project$Main$wall = A2(
 	$elm$core$Set$union,
 	$author$project$Main$leftWall,
 	A2($elm$core$Set$union, $author$project$Main$bottomWall, $author$project$Main$rightWall));
-var $author$project$Main$initBoard = {block: $author$project$Main$wall, mino: $author$project$Main$minoT};
+var $author$project$Main$initBoard = {block: $author$project$Main$wall, mino: $author$project$Main$initMino};
 var $author$project$Main$init = $author$project$Main$initBoard;
 var $elm$core$Result$Err = function (a) {
 	return {$: 'Err', a: a};
@@ -5442,91 +5441,145 @@ var $elm$core$Set$member = F2(
 		var dict = _v0.a;
 		return A2($elm$core$Dict$member, key, dict);
 	});
-var $author$project$Main$canMoveMino = F2(
-	function (block, mino) {
-		return $elm$core$List$isEmpty(
-			A2(
-				$elm$core$List$filter,
-				function (a) {
-					return A2($elm$core$Set$member, a, block);
-				},
-				$elm$core$Set$toList(mino)));
+var $author$project$Main$minoT = F2(
+	function (d, _v0) {
+		var x = _v0.a;
+		var y = _v0.b;
+		switch (d.$) {
+			case 'Noth':
+				return $elm$core$Set$fromList(
+					_List_fromArray(
+						[
+							_Utils_Tuple2(x, y - 1),
+							_Utils_Tuple2(x - 1, y),
+							_Utils_Tuple2(x, y),
+							_Utils_Tuple2(x + 1, y)
+						]));
+			case 'East':
+				return $elm$core$Set$fromList(
+					_List_fromArray(
+						[
+							_Utils_Tuple2(x, y - 1),
+							_Utils_Tuple2(x, y),
+							_Utils_Tuple2(x + 1, y),
+							_Utils_Tuple2(x, y + 1)
+						]));
+			case 'South':
+				return $elm$core$Set$fromList(
+					_List_fromArray(
+						[
+							_Utils_Tuple2(x - 1, y),
+							_Utils_Tuple2(x, y),
+							_Utils_Tuple2(x + 1, y),
+							_Utils_Tuple2(x, y + 1)
+						]));
+			default:
+				return $elm$core$Set$fromList(
+					_List_fromArray(
+						[
+							_Utils_Tuple2(x, y - 1),
+							_Utils_Tuple2(x - 1, y),
+							_Utils_Tuple2(x, y),
+							_Utils_Tuple2(x, y + 1)
+						]));
+		}
 	});
-var $elm$core$Set$foldl = F3(
-	function (func, initialState, _v0) {
-		var dict = _v0.a;
-		return A3(
-			$elm$core$Dict$foldl,
-			F3(
-				function (key, _v1, state) {
-					return A2(func, key, state);
-				}),
-			initialState,
-			dict);
-	});
-var $elm$core$Set$map = F2(
-	function (func, set) {
-		return $elm$core$Set$fromList(
-			A3(
-				$elm$core$Set$foldl,
-				F2(
-					function (x, xs) {
-						return A2(
-							$elm$core$List$cons,
-							func(x),
-							xs);
-					}),
-				_List_Nil,
-				set));
-	});
+var $author$project$Main$mino = function (m) {
+	var _v0 = m.minoK;
+	return A2($author$project$Main$minoT, m.minoD, m.point);
+};
+var $author$project$Main$canMoveMino = function (model) {
+	return $elm$core$List$isEmpty(
+		A2(
+			$elm$core$List$filter,
+			function (a) {
+				return A2($elm$core$Set$member, a, model.block);
+			},
+			$elm$core$Set$toList(
+				$author$project$Main$mino(model.mino))));
+};
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
 var $author$project$Main$nextMino = F2(
-	function (mino, direction) {
+	function (m, direction) {
+		var y = m.point.b;
+		var x = m.point.a;
 		switch (direction.$) {
 			case 'Right':
-				return A2(
-					$elm$core$Set$map,
-					function (_v1) {
-						var x = _v1.a;
-						var y = _v1.b;
-						return _Utils_Tuple2(x + 1, y);
-					},
-					mino);
+				return _Utils_update(
+					m,
+					{
+						point: _Utils_Tuple2(x + 1, y)
+					});
 			case 'Down':
-				return A2(
-					$elm$core$Set$map,
-					function (_v2) {
-						var x = _v2.a;
-						var y = _v2.b;
-						return _Utils_Tuple2(x, y + 1);
-					},
-					mino);
+				return _Utils_update(
+					m,
+					{
+						point: _Utils_Tuple2(x, y + 1)
+					});
 			default:
-				return A2(
-					$elm$core$Set$map,
-					function (_v3) {
-						var x = _v3.a;
-						var y = _v3.b;
-						return _Utils_Tuple2(x - 1, y);
-					},
-					mino);
+				return _Utils_update(
+					m,
+					{
+						point: _Utils_Tuple2(x - 1, y)
+					});
 		}
 	});
 var $author$project$Main$moveMinoDown = function (model) {
-	var mino = A2($author$project$Main$nextMino, model.mino, $author$project$Main$Down);
-	return A2($author$project$Main$canMoveMino, model.block, mino) ? _Utils_update(
+	var m = A2($author$project$Main$nextMino, model.mino, $author$project$Main$Down);
+	return $author$project$Main$canMoveMino(
+		_Utils_update(
+			model,
+			{mino: m})) ? _Utils_update(
 		model,
-		{mino: mino}) : {
-		block: A2($elm$core$Set$union, model.block, model.mino),
-		mino: $author$project$Main$minoT
+		{mino: m}) : {
+		block: A2(
+			$elm$core$Set$union,
+			model.block,
+			$author$project$Main$mino(model.mino)),
+		mino: $author$project$Main$initMino
 	};
 };
 var $author$project$Main$moveMinoHorizon = F2(
 	function (model, direction) {
-		var mino = A2($author$project$Main$nextMino, model.mino, direction);
-		return A2($author$project$Main$canMoveMino, model.block, mino) ? _Utils_update(
+		var m = A2($author$project$Main$nextMino, model.mino, direction);
+		return $author$project$Main$canMoveMino(
+			_Utils_update(
+				model,
+				{mino: m})) ? _Utils_update(
 			model,
-			{mino: mino}) : model;
+			{mino: m}) : model;
 	});
+var $author$project$Main$East = {$: 'East'};
+var $author$project$Main$South = {$: 'South'};
+var $author$project$Main$West = {$: 'West'};
+var $author$project$Main$rotationRightRule = function (d) {
+	switch (d.$) {
+		case 'Noth':
+			return $author$project$Main$East;
+		case 'East':
+			return $author$project$Main$South;
+		case 'South':
+			return $author$project$Main$West;
+		default:
+			return $author$project$Main$Noth;
+	}
+};
+var $author$project$Main$rotationRightMino = function (model) {
+	var m = model.mino;
+	var d = $author$project$Main$rotationRightRule(model.mino.minoD);
+	var nm = _Utils_update(
+		m,
+		{minoD: d});
+	return $author$project$Main$canMoveMino(
+		_Utils_update(
+			model,
+			{mino: nm})) ? _Utils_update(
+		model,
+		{mino: nm}) : model;
+};
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -5534,8 +5587,10 @@ var $author$project$Main$update = F2(
 				return $author$project$Main$moveMinoDown(model);
 			case 'ToRight':
 				return A2($author$project$Main$moveMinoHorizon, model, $author$project$Main$Right);
-			default:
+			case 'ToLeft':
 				return A2($author$project$Main$moveMinoHorizon, model, $author$project$Main$Left);
+			default:
+				return $author$project$Main$rotationRightMino(model);
 		}
 	});
 var $elm$html$Html$div = _VirtualDom_node('div');
@@ -5598,11 +5653,15 @@ var $author$project$Main$viewBoard = function (model) {
 			function (x) {
 				return A2(
 					$author$project$Main$viewCellColumn,
-					A2($elm$core$Set$union, model.block, model.mino),
+					A2(
+						$elm$core$Set$union,
+						model.block,
+						$author$project$Main$mino(model.mino)),
 					x);
 			},
 			A2($elm$core$List$range, 1, $author$project$Main$boardSizeX)));
 };
+var $author$project$Main$RotaionRight = {$: 'RotaionRight'};
 var $author$project$Main$ToDown = {$: 'ToDown'};
 var $author$project$Main$ToLeft = {$: 'ToLeft'};
 var $author$project$Main$ToRight = {$: 'ToRight'};
@@ -5660,6 +5719,16 @@ var $author$project$Main$viewController = A2(
 			_List_fromArray(
 				[
 					$elm$html$Html$text('→')
+				])),
+			A2(
+			$elm$html$Html$button,
+			_List_fromArray(
+				[
+					$elm$html$Html$Events$onClick($author$project$Main$RotaionRight)
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('右回り')
 				]))
 		]));
 var $author$project$Main$view = function (model) {
